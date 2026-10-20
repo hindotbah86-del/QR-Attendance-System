@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+  <title>نظام حضور الطلاب QR</title>
+
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f5f9;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      max-width: 480px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 3px 15px #0001;
+    }
+    h2 { color: #176b46; }
+    button, input {
+      padding: 13px;
+      margin: 8px 0;
+      font-size: 16px;
+      border-radius: 8px;
+      box-sizing: border-box;
+      width: 100%;
+    }
+    button {
+      background: #167347;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+    input { border: 1px solid #cbd5e1; }
+    #reader {
+      width: 100%;
+      margin: 15px auto;
+    }
+    #result {
+      padding: 12px;
+      background: #eef2f7;
+      border-radius: 8px;
+      overflow-wrap: anywhere;
+    }
+    .note {
+      color: #64748b;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>جامعة ابن سينا</h2>
+    <h3>نظام حضور الطلاب QR</h3>
+
+    <p>مسح رمز الطالب بالكاميرا</p>
+
+    <button id="startBtn" onclick="startCamera()">
+      تشغيل كاميرا QR
+    </button>
+
+    <button id="stopBtn" onclick="stopCamera()"
+            disabled>
+      إيقاف الكاميرا
+    </button>
+
+    <div id="reader"></div>
+
+    <p>أو أدخل رقم الطالب يدوياً</p>
+    <input id="studentId"
+           placeholder="رقم الطالب">
+
+    <button onclick="manualScan()">
+      قراءة رقم الطالب
+    </button>
+
+    <div id="result" role="status">
+      جاهز لقراءة QR
+    </div>
+
+    <p class="note">
+      نسخة اختبار الكاميرا فقط.
+      لا تسجل الحضور في Google Sheets بعد.
+    </p>
+  </div>
+
+<script>
+  let scanner = null;
+  let busy = false;
+
+  function showMessage(text) {
+    document.getElementById('result').textContent = text;
+  }
+
+  function readStudent(id) {
+    id = String(id).trim();
+
+    if (!id || busy) return;
+
+    busy = true;
+    document.getElementById('studentId').value = id;
+    showMessage('تمت قراءة رمز الطالب: ' + id);
+
+    // الربط مع Apps Script سيضاف لاحقاً.
+    setTimeout(() => { busy = false; }, 1500);
+  }
+
+  function manualScan() {
+    readStudent(
+      document.getElementById('studentId').value
+    );
+  }
+
+  async function startCamera() {
+    if (scanner) return;
+
+    if (typeof Html5Qrcode === 'undefined') {
+      showMessage('تعذر تحميل مكتبة QR');
+      return;
+    }
+
+    scanner = new Html5Qrcode('reader');
+
+    try {
+      await scanner.start(
+        { facingMode: 'environment' },
+        { fps: 10, qrbox: 230 },
+        decodedText => readStudent(decodedText),
+        () => {}
+      );
+
+      document.getElementById('startBtn').disabled = true;
+      document.getElementById('stopBtn').disabled = false;
+      showMessage('الكاميرا تعمل، وجّهها نحو QR');
+
+    } catch (error) {
+      showMessage('خطأ الكاميرا: ' + error);
+      try { scanner.clear(); } catch (e) {}
+      scanner = null;
+    }
+  }
+
+  async function stopCamera() {
+    if (!scanner) return;
+
+    try {
+      await scanner.stop();
+      scanner.clear();
+    } catch (e) {
+      showMessage('تعذر إيقاف الكاميرا: ' + e);
+    }
+
+    scanner = null;
+    document.getElementById('startBtn').disabled = false;
+    document.getElementById('stopBtn').disabled = true;
+  }
+</script>
+</body>
+</html>
