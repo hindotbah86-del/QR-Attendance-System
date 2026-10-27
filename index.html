@@ -88,6 +88,10 @@
       قراءة رقم الطالب
     </button>
 
+<button type="button" onclick="testConnection()">
+  اختبار الاتصال بالنظام
+</button>
+
     <div id="result" role="status">
       جاهز لقراءة QR
     </div>
@@ -100,6 +104,11 @@
 
 <script>
   let scanner = null;
+  
+async function testConnection() {
+  showMessage('زر اختبار الاتصال جاهز. لم يتم إرسال أي بيانات.');
+}
+
   let busy = false;
 
   function showMessage(text) {
