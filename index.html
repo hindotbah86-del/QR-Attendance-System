@@ -105,7 +105,11 @@
 <script>
   let scanner = null;
 async function testConnection() {
-  showMessage('الكاميرا جاهزة. الربط بقاعدة البيانات لم يُفعّل بعد.');
+  showMessage('جاري اختبار الاتصال...');
+  window.open(
+    'https://script.google.com/macros/s/AKfycbxmY7iBjeJwkKAAgv8i2bnhE-PDpJOHPz-nQIUDvwWa45ie1CTOxsXvYZvH-R3PMSvOHg/exec?page=status',
+    '_blank'
+  );
 }
 
   let busy = false;
