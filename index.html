@@ -104,12 +104,16 @@
 
 <script>
   let scanner = null;
+
 async function testConnection() {
-  showMessage('جاري اختبار الاتصال...');
+  showMessage('جاري فتح رابط الاختبار...');
+
   window.open(
-    https://script.google.com/macros/s/AKfycbxa3QRt8p2j8D-3U9pbt6CfcYZeMyFwSW0SSrhH399IrR2QLcW2lXLTA0wfng9aYdETzA/exec
+    'https://script.google.com/macros/s/AKfycbxa3QRt8p2j8D-3U9pbt6CfcYZeMyFwSW0SSrhH399IrR2QLcW2lXLTA0wfng9aYdETzA/exec',
+    '_blank'
   );
 }
+
 
   let busy = false;
 
