@@ -227,6 +227,11 @@ document.getElementById("teacherLoginBtn").onclick = async () => {
       document.getElementById("teacherPassword").value
     );
     window.firebaseAuth = auth;
+    window.getTeacherToken = async function () {
+  const user = auth.currentUser;
+  if (!user) throw new Error("يجب تسجيل الدخول أولاً");
+  return await user.getIdToken();
+};
     result.textContent = "تم تسجيل الدخول بنجاح";
     document.getElementById("teacherPassword").value = "";
   } catch (error) {
