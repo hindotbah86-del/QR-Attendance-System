@@ -226,6 +226,7 @@ document.getElementById("teacherLoginBtn").onclick = async () => {
       document.getElementById("teacherEmail").value.trim(),
       document.getElementById("teacherPassword").value
     );
+    window.firebaseAuth = auth;
     result.textContent = "تم تسجيل الدخول بنجاح";
     document.getElementById("teacherPassword").value = "";
   } catch (error) {
