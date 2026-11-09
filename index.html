@@ -184,5 +184,54 @@ async function testConnection() {
     document.getElementById('stopBtn').disabled = true;
   }
 </script>
+  
+<script type="module">
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+
+import {
+  getAuth,
+  signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCjI9jImvO4IRU943b0f2YrH8ZnR6cPBkQ",
+  authDomain: "ibnsina-qr-attendance.firebaseapp.com",
+  projectId: "ibnsina-qr-attendance",
+  storageBucket: "ibnsina-qr-attendance.firebasestorage.app",
+  messagingSenderId: "379534934233",
+  appId: "1:379534934233:web:e4d9fc2b89a5332ee37ec8"
+};
+
+const auth = getAuth(initializeApp(firebaseConfig));
+
+const loginBox = document.createElement("div");
+loginBox.innerHTML = `
+  <h3>دخول التدريسي</h3>
+  <input id="teacherEmail" type="email" placeholder="البريد الإلكتروني">
+  <input id="teacherPassword" type="password" placeholder="كلمة المرور">
+  <button id="teacherLoginBtn">تسجيل الدخول</button>
+  <p id="teacherLoginResult"></p>
+`;
+document.querySelector(".container").prepend(loginBox);
+
+document.getElementById("teacherLoginBtn").onclick = async () => {
+  const result = document.getElementById("teacherLoginResult");
+  result.textContent = "جاري تسجيل الدخول...";
+
+  try {
+    const user = await signInWithEmailAndPassword(
+      auth,
+      document.getElementById("teacherEmail").value.trim(),
+      document.getElementById("teacherPassword").value
+    );
+    result.textContent = "تم تسجيل الدخول بنجاح";
+    document.getElementById("teacherPassword").value = "";
+  } catch (error) {
+    result.textContent = "فشل تسجيل الدخول: " + error.code;
+  }
+};
+</script>
+
 </body>
 </html>
